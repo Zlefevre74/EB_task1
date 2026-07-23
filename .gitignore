@@ -1,6 +1,6 @@
 .venv
 docker-compose.yaml
 .claude
-.env
+src/.env
 _env
 alembic.ini
