@@ -2,8 +2,8 @@ from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 from starlette.responses import JSONResponse
 
-from eldar_menties_project.src.api.healthcheck import router
-
+from api.healthcheck import router
+from api.users import router as user_router
 
 def get_app() -> FastAPI:
     app = FastAPI(
@@ -21,5 +21,6 @@ def get_app() -> FastAPI:
     )
 
     app.include_router(router)
+    app.include_router(user_router)
 
     return app
