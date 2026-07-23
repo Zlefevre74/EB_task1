@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 from starlette.responses import JSONResponse
 
-from src.router.healthcheck import router
+from eldar_menties_project.src.api.healthcheck import router
 
 
 def get_app() -> FastAPI:
