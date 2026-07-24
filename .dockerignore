@@ -1,7 +1,7 @@
 .venv
- .git
- .idea
- __pycache__
- *.pyc
- .env
- src/.env
+.git
+.idea
+__pycache__
+*.pyc
+.env
+src/.env
