@@ -2,15 +2,12 @@ FROM python:3.12
 
 WORKDIR /app
 
-COPY pyproject.toml poetry.lock ./
+COPY . .
+
+RUN pip install poetry
 RUN poetry install --no-root
 
-COPY src ./src
-COPY alembic ./alembic
-COPY alembic.ini ./
-
 WORKDIR /app/src
-
-EXPOSE 8000
-
-RUN pip install --no-cache-dir poetry
+CMD ["poetry", "run", "uvicorn",
+  "application:get_app", "--host", "0.0.0.0",
+  "--port", "8000", "--factory"]
