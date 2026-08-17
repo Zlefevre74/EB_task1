@@ -15,11 +15,10 @@ class BaseServiceModel:
         server_default=sa.func.now(),
         nullable=False,
     )
-    updated_at: Mapped[datetime] = mapped_column(
+    updated_at: Mapped[datetime | None] = mapped_column(
         sa.DateTime(timezone=True),
-        server_default=sa.func.now(),
         onupdate=sa.func.now(),
-        nullable=False,
+        nullable=True,
     )
     is_deleted: Mapped[bool] = mapped_column(
         sa.Boolean(),
@@ -38,4 +37,4 @@ Base: DeclarativeMeta = declarative_base(metadata=metadata, cls=BaseServiceModel
 class UserModel(Base):
     __tablename__ = 'users'
     id: Mapped[UUID] = mapped_column(primary_key=True, default=uuid4)
-    username: Mapped[str] = mapped_column(sa.String(), unique=True)
+    username: Mapped[str] = mapped_column(sa.String())
