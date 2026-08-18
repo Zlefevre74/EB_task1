@@ -1,10 +1,8 @@
-from contextlib import asynccontextmanager
+from typing import AsyncGenerator
 
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker, create_async_engine
 
-from config import Settings
-
-settings = Settings()
+from config import settings
 
 engine: AsyncEngine = create_async_engine(
     str(settings.postgres_url),
@@ -18,8 +16,8 @@ SessionFactory = async_sessionmaker(
 )
 
 
-@asynccontextmanager
-async def get_session() -> AsyncSession:
+
+async def get_session() -> AsyncGenerator[AsyncSession, None]:
     async with SessionFactory() as session:
         try:
             yield session

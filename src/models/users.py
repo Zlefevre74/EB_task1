@@ -1,10 +1,11 @@
 import sqlalchemy as sa
 from sqlalchemy.orm import DeclarativeMeta, Mapped, declarative_base, mapped_column
 
-from datetime import datetime
+from datetime import date, datetime
 from uuid import UUID, uuid4
 
 metadata = sa.MetaData()
+
 
 
 class BaseServiceModel:
@@ -38,3 +39,7 @@ class UserModel(Base):
     __tablename__ = 'users'
     id: Mapped[UUID] = mapped_column(primary_key=True, default=uuid4)
     username: Mapped[str] = mapped_column(sa.String())
+    email: Mapped[str] = mapped_column(sa.String())
+    birth_date: Mapped[date] = mapped_column(sa.Date())
+    is_locked: Mapped[bool] = mapped_column(sa.Boolean(), server_default=sa.false())
+
