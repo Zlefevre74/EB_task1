@@ -5,13 +5,13 @@ from starlette import status
 
 from db import get_session
 from repos.users import create_user, get_user, update_user, delete_user
-from schemas.users import User, UserAdd
+from schemas.users import User, UserCreate, UserUpdate
 
 router = APIRouter(prefix="/users", tags=["users"])
 
 
 @router.post("/register", response_model=User, status_code=status.HTTP_201_CREATED)
-async def add_user(payload: UserAdd, session: AsyncSession = Depends(get_session)) -> User:
+async def add_user(payload: UserCreate, session: AsyncSession = Depends(get_session)) -> User:
     user = await create_user(session, payload.username)
     return User.model_validate(user)
 
@@ -25,7 +25,7 @@ async def read_user(user_id: UUID, session: AsyncSession = Depends(get_session))
 
 
 @router.put("/{user_id}", response_model=User, status_code=status.HTTP_200_OK)
-async def edit_user(user_id: UUID, payload: UserAdd, session: AsyncSession = Depends(get_session)) -> User:
+async def edit_user(user_id: UUID, payload: UserUpdate, session: AsyncSession = Depends(get_session)) -> User:
     user = await update_user(session, user_id, payload.username)
     if user is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
