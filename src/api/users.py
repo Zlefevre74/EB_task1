@@ -1,11 +1,12 @@
 from uuid import UUID
 from sqlalchemy.ext.asyncio import AsyncSession
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, Depends
 from starlette import status
 
 from db import get_session
 from repos.users import create_user, get_user, update_user, delete_user
 from schemas.users import User, UserCreate, UserUpdate
+from exceptions import NotFound
 
 router = APIRouter(prefix="/users", tags=["users"])
 
@@ -20,7 +21,7 @@ async def add_user(payload: UserCreate, session: AsyncSession = Depends(get_sess
 async def read_user(user_id: UUID, session: AsyncSession = Depends(get_session)) -> User:
     user = await get_user(session, user_id)
     if user is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+        raise NotFound("User", user_id)
     return User.model_validate(user)
 
 
@@ -28,7 +29,7 @@ async def read_user(user_id: UUID, session: AsyncSession = Depends(get_session))
 async def edit_user(user_id: UUID, payload: UserUpdate, session: AsyncSession = Depends(get_session)) -> User:
     user = await update_user(session, user_id, payload.username)
     if user is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+        raise NotFound("User", user_id)
     return User.model_validate(user)
 
 
@@ -36,4 +37,4 @@ async def edit_user(user_id: UUID, payload: UserUpdate, session: AsyncSession = 
 async def remove_user(user_id: UUID, session: AsyncSession = Depends(get_session)) -> None:
     deleted = await delete_user(session, user_id)
     if not deleted:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+        raise NotFound("User", user_id)
