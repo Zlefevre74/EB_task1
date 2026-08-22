@@ -10,7 +10,7 @@ from schemas.users import User, UserCreate, UserUpdate
 router = APIRouter(prefix="/users", tags=["users"])
 
 
-@router.post("/register", response_model=User, status_code=status.HTTP_201_CREATED)
+@router.post("/", response_model=User, status_code=status.HTTP_201_CREATED)
 async def add_user(payload: UserCreate, session: AsyncSession = Depends(get_session)) -> User:
     user = await create_user(session, payload.username)
     return User.model_validate(user)

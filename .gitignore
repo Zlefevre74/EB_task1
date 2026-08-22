@@ -5,3 +5,4 @@ _env
 alembic.ini
 __pycache__/
 *.py[cod]
+poetry.toml

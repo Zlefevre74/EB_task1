@@ -1,4 +1,4 @@
-from pydantic import BaseModel, ConfigDict, field_validator
+from pydantic import BaseModel, ConfigDict, field_validator, EmailStr
 from datetime import date
 
 import uuid
@@ -6,14 +6,23 @@ import uuid
 
 class UserBase(BaseModel):
     username: str
-    email: str
+    email: EmailStr
     birth_date: date
+
+    @field_validator('username','birth_date','email')
+    @classmethod
+    def reject_null(cls, v, info):
+        if v is None:
+            raise ValueError(f'{info.field_name} must not be null')
+        return v
+
 
     @field_validator('birth_date')
     @classmethod
     def validate_birth_date(cls, v):
         if v > date.today():
             raise ValueError('Birth date must not be in the future')
+
         return v
 
     @field_validator('username')
@@ -36,7 +45,7 @@ class UserCreate(UserBase):
 
 class UserUpdate(UserBase):
     username: str | None = None
-    email: str | None = None
+    email: EmailStr | None = None
     birth_date: date | None = None
 
 
