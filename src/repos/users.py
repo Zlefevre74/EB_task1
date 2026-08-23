@@ -4,8 +4,7 @@ from uuid import UUID
 
 from models.users import UserModel
 
-async def create_user(session: AsyncSession, username: str) -> UserModel:
-    user = UserModel(username=username)
+async def create_user(session: AsyncSession, user: UserModel) -> UserModel:
     session.add(user)
     await session.flush()
     return user
