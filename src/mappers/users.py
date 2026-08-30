@@ -1,5 +1,5 @@
 from models.users import UserModel
-from schemas.users import User, UserCreate
+from schemas.users import User, UserUpdate, UserCreate
 
 def to_orm(dto: UserCreate) -> UserModel:
     return UserModel(
@@ -16,3 +16,6 @@ def to_dto(model: UserModel) -> User:
         birth_date=model.birth_date,
         is_locked=model.is_locked
     )
+
+def to_update_fields(dto: UserUpdate) -> dict:
+    return dto.model_dump(exclude_unset=True)
