@@ -5,7 +5,7 @@ from typing import Annotated
 
 from services.users import UserService
 from schemas.users import User, UserCreate, UserUpdate
-from dependencies import get_read_user_service, get_user_service
+from dependencies.users import get_read_user_service, get_user_service
 
 router = APIRouter(prefix="/users", tags=["users"])
 
