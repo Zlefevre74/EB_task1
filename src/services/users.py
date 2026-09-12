@@ -25,8 +25,6 @@ class UserService:
 
     async def update(self, user_id: UUID, payload: UserUpdate) -> User:
         fields = to_update_fields(payload)
-        if not fields:
-            return await self.get(user_id)
         user = await self.repo.update(user_id, fields)
         if user is None:
             raise NotFound("User", user_id)

@@ -1,7 +1,10 @@
-from pydantic import BaseModel, ConfigDict, field_validator, EmailStr
+from pydantic import BaseModel, ConfigDict, field_validator, ValidationInfo, EmailStr, model_validator
 from datetime import date
 
 import uuid
+
+from exceptions import InvalidField, EmptyPayload
+from typing import Self, Any
 
 
 class UserBase(BaseModel):
@@ -11,25 +14,25 @@ class UserBase(BaseModel):
 
     @field_validator('username','birth_date','email')
     @classmethod
-    def reject_null(cls, v, info):
+    def reject_null(cls, v: Any, info: ValidationInfo) -> Any:
         if v is None:
-            raise ValueError(f'{info.field_name} must not be null')
+            raise InvalidField(info.field_name,'must not be null')
         return v
 
 
     @field_validator('birth_date')
     @classmethod
-    def validate_birth_date(cls, v):
+    def validate_birth_date(cls, v: date) -> date:
         if v > date.today():
-            raise ValueError('Birth date must not be in the future')
+            raise InvalidField('birth_date','must not be in the future')
 
         return v
 
     @field_validator('username')
     @classmethod
-    def validate_username(cls, v):
+    def validate_username(cls, v: str) -> str:
         if len(v) < 3 or len(v) > 35:
-            raise ValueError('Username must be between 3 and 35 characters long')
+            raise InvalidField('username','must be between 3 and 35 characters long')
         return v
 
 
@@ -47,5 +50,11 @@ class UserUpdate(UserBase):
     username: str | None = None
     email: EmailStr | None = None
     birth_date: date | None = None
+
+    @model_validator(mode='after')
+    def reject_empty_payload(self) -> Self:
+        if not self.model_fields_set:
+            raise EmptyPayload()
+        return self
 
 
