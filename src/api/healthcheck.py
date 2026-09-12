@@ -2,9 +2,9 @@ from typing import Dict
 
 from fastapi import APIRouter
 
-router = APIRouter()
+healthcheck_router = APIRouter()
 
 
-@router.get('/healthcheck')
+@healthcheck_router.get('/healthcheck')
 async def healthcheck() -> Dict[str, str]:
     return {'status': 'ok'}
