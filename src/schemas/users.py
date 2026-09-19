@@ -16,7 +16,7 @@ class UserBase(BaseModel):
     @classmethod
     def reject_null(cls, v: Any, info: ValidationInfo) -> Any:
         if v is None:
-            raise InvalidField(info.field_name,'must not be null')
+            raise InvalidField(f'{info.field_name} must not be null')
         return v
 
 
@@ -24,7 +24,7 @@ class UserBase(BaseModel):
     @classmethod
     def validate_birth_date(cls, v: date) -> date:
         if v > date.today():
-            raise InvalidField('birth_date','must not be in the future')
+            raise InvalidField('birth_date must not be in the future')
 
         return v
 
@@ -32,7 +32,7 @@ class UserBase(BaseModel):
     @classmethod
     def validate_username(cls, v: str) -> str:
         if len(v) < 3 or len(v) > 35:
-            raise InvalidField('username','must be between 3 and 35 characters long')
+            raise InvalidField('username must be between 3 and 35 characters long')
         return v
 
 
@@ -54,7 +54,7 @@ class UserUpdate(UserBase):
     @model_validator(mode='after')
     def reject_empty_payload(self) -> Self:
         if not self.model_fields_set:
-            raise EmptyPayload()
+            raise EmptyPayload('At least one field is expected')
         return self
 
 
