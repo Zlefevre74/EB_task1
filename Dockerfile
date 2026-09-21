@@ -6,7 +6,7 @@ ENV POETRY_VIRTUALENVS_IN_PROJECT=true \
 
 WORKDIR /app
 
-RUN pip install --no-cache-dir poetry
+RUN pip install --no-cache-dir poetry==2.4.1
 
 COPY pyproject.toml poetry.lock ./
 RUN poetry install --no-root --only main
@@ -17,14 +17,15 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PATH="/app/.venv/bin:$PATH"
 
+RUN useradd --create-home appuser
+
 WORKDIR /app
 
-COPY --from=builder /app/.venv ./.venv
-COPY src ./src
-COPY alembic ./alembic
-COPY alembic.ini ./
+COPY --from=builder --chown=appuser:appuser /app/.venv ./.venv
+COPY --chown=appuser:appuser src ./src
+COPY --chown=appuser:appuser alembic ./alembic
+COPY --chown=appuser:appuser alembic.ini ./
 
-RUN useradd --create-home appuser && chown -R appuser:appuser /app
 USER appuser
 
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s \
