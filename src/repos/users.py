@@ -6,7 +6,7 @@ from models.users import UserModel
 class UserRepo:
     def __init__(self, session: AsyncSession): self.session = session
 
-    async def create(self, user: UserModel) -> UserModel:
+    async def save(self, user: UserModel) -> UserModel:
         self.session.add(user)
         await self.session.flush()
         return user
@@ -15,17 +15,6 @@ class UserRepo:
         stmt = select(UserModel).where(
             UserModel.id == user_id,
             UserModel.is_deleted.is_(False),
-        )
-        res = await self.session.execute(stmt)
-        return res.scalar_one_or_none()
-
-    async def update(self, user_id: UUID, fields: dict) -> UserModel | None:
-        stmt = (
-            update(UserModel)
-            .where(UserModel.id == user_id,
-                   UserModel.is_deleted.is_(False))
-            .values(**fields)
-            .returning(UserModel)
         )
         res = await self.session.execute(stmt)
         return res.scalar_one_or_none()

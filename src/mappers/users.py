@@ -17,5 +17,7 @@ def to_dto(model: UserModel) -> User:
         is_locked=model.is_locked
     )
 
-def to_update_fields(dto: UserUpdate) -> dict:
-    return dto.model_dump(exclude_unset=True)
+def apply_update(model: UserModel, dto: UserUpdate) -> UserModel:
+    for field, value in dto.model_dump(exclude_unset=True).items():
+        setattr(model, field, value)
+    return model

@@ -1,6 +1,6 @@
 from uuid import UUID
 from exceptions import NotFound
-from mappers.users import to_orm, to_dto, to_update_fields
+from mappers.users import to_orm, to_dto, apply_update
 from schemas.users import User, UserCreate, UserUpdate
 from repos.users import UserRepo
 
@@ -11,7 +11,7 @@ class UserService:
 
     async def create(self, payload: UserCreate) -> User:
         user = to_orm(payload)
-        created = await self.repo.create(user)
+        created = await self.repo.save(user)
         return to_dto(created)
 
 
@@ -24,11 +24,12 @@ class UserService:
 
 
     async def update(self, user_id: UUID, payload: UserUpdate) -> User:
-        fields = to_update_fields(payload)
-        user = await self.repo.update(user_id, fields)
+        user = await self.repo.get(user_id)
         if user is None:
             raise NotFound(f'User with id {user_id} is not found')
-        return to_dto(user)
+        apply_update(user, payload)
+        saved = await self.repo.save(user)
+        return to_dto(saved)
 
 
     async def delete(self, user_id: UUID) -> None:
