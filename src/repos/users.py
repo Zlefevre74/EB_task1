@@ -1,4 +1,4 @@
-from sqlalchemy import select, update
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from uuid import UUID
 from models.users import UserModel
@@ -19,13 +19,4 @@ class UserRepo:
         res = await self.session.execute(stmt)
         return res.scalar_one_or_none()
 
-    async def delete(self, user_id: UUID) -> bool:
-        stmt = (
-            update(UserModel)
-            .where(UserModel.id == user_id, UserModel.is_deleted.is_(False))
-            .values(is_deleted=True)
-            .returning(UserModel.id)
-        )
-        res = await self.session.execute(stmt)
-        return res.scalar_one_or_none() is not None
 
