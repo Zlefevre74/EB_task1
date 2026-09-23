@@ -1,0 +1,8 @@
+.venv
+docker-compose.yaml
+src/.env
+_env
+alembic.ini
+__pycache__/
+*.py[cod]
+poetry.toml
