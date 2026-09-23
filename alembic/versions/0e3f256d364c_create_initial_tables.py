@@ -1,8 +1,8 @@
-"""create users table
+"""create_initial_tables
 
-Revision ID: 105583892f7d
+Revision ID: 0e3f256d364c
 Revises: 
-Create Date: 2026-09-14 22:14:07.522786
+Create Date: 2026-05-22 15:48:15.186179
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '105583892f7d'
+revision: str = '0e3f256d364c'
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -24,12 +24,6 @@ def upgrade() -> None:
     op.create_table('users',
     sa.Column('id', sa.Uuid(), nullable=False),
     sa.Column('username', sa.String(), nullable=False),
-    sa.Column('email', sa.String(), nullable=False),
-    sa.Column('birth_date', sa.Date(), nullable=False),
-    sa.Column('is_locked', sa.Boolean(), server_default=sa.text('false'), nullable=False),
-    sa.Column('created_at', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=False),
-    sa.Column('updated_at', sa.DateTime(timezone=True), nullable=True),
-    sa.Column('is_deleted', sa.Boolean(), server_default=sa.text('false'), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
     # ### end Alembic commands ###
