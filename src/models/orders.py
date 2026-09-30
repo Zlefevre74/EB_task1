@@ -8,17 +8,10 @@ import sqlalchemy as sa
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .users import Base
+from domain.billing import BillingPeriod, SubscriptionType
 
 def _values(e: type[enum.Enum]) -> list[str]:
     return [m.value for m in e]
-
-class SubscriptionType(enum.StrEnum):
-    BASIC = 'basic'
-    PRO = 'pro'
-
-class BillingPeriod(enum.StrEnum):
-    MONTHLY = 'monthly'
-    ANNUAL = 'annual'
 
 class OrderModel(Base):
     __tablename__ = 'orders'
