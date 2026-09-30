@@ -1,5 +1,5 @@
 import sqlalchemy as sa
-from sqlalchemy.orm import DeclarativeMeta, Mapped, declarative_base, mapped_column
+from sqlalchemy.orm import DeclarativeMeta, Mapped, declarative_base, mapped_column, relationship
 
 from datetime import date, datetime
 from uuid import UUID, uuid4
@@ -42,4 +42,5 @@ class UserModel(Base):
     email: Mapped[str] = mapped_column(sa.String())
     birth_date: Mapped[date] = mapped_column(sa.Date())
     is_locked: Mapped[bool] = mapped_column(sa.Boolean(), server_default=sa.false())
+    orders: Mapped[list['OrderModel']] = relationship(back_populates='user')
 
