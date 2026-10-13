@@ -1,20 +1,13 @@
 from sqlalchemy import select
-from sqlalchemy.ext.asyncio import AsyncSession
 from uuid import UUID
 
 from models.orders import OrderModel
-from models.users import Base, UserModel
-from repos.pagination import PageResult, paginate
-from schemas.pagination import PaginationParams
+from models.users import UserModel
+from repos.base import BaseRepo
+from schemas.pagination import PaginationParams, PageResult
 
-class UserRepo:
-    def __init__(self, session: AsyncSession): self.session = session
 
-    async def save[T: Base](self, entity: T) -> T:
-        self.session.add(entity)
-        await self.session.flush()
-        return entity
-
+class UserRepo(BaseRepo):
     async def get(self, user_id: UUID) -> UserModel | None:
         stmt = select(UserModel).where(
             UserModel.id == user_id,
@@ -38,6 +31,6 @@ class UserRepo:
             .where(OrderModel.user_id == user_id, OrderModel.is_deleted.is_(False))
             .order_by(OrderModel.created_at.desc(), OrderModel.id)
         )
-        return await paginate(self.session, stmt, params)
+        return await self.paginate(stmt, params)
 
 

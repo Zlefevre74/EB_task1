@@ -1,5 +1,7 @@
+from dataclasses import dataclass
+
 from pydantic import BaseModel, Field, computed_field
-from typing import Generic, TypeVar
+from typing import Generic, TypeVar, Sequence
 
 T = TypeVar("T")
 
@@ -21,3 +23,8 @@ class Page(BaseModel, Generic[T]):
     @property
     def total_pages(self) -> int:
         return (self.total + self.size -1) // self.size
+
+@dataclass(frozen=True, slots=True)
+class PageResult[T]:
+    items: Sequence[T]
+    total: int
