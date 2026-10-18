@@ -1,30 +1,22 @@
 from dataclasses import dataclass
+from datetime import datetime
+from pydantic import BaseModel, Field
+from typing import Sequence
+from uuid import UUID
 
-from pydantic import BaseModel, Field, computed_field
-from typing import Generic, TypeVar, Sequence
-
-T = TypeVar("T")
 
 class PaginationParams(BaseModel):
-    page: int = Field(1, ge=1)
+    last_created_at: datetime | None = None
+    last_id: UUID| None = None
     size: int = Field(10, ge=1, le=100)
 
-    @property
-    def offset(self) -> int:
-        return (self.page -1) * self.size
-
-class Page(BaseModel, Generic[T]):
+class Page[T](BaseModel):
     items: list[T]
-    page: int
     size: int
-    total: int
+    has_next: bool
 
-    @computed_field
-    @property
-    def total_pages(self) -> int:
-        return (self.total + self.size -1) // self.size
 
 @dataclass(frozen=True, slots=True)
 class PageResult[T]:
     items: Sequence[T]
-    total: int
+    has_next: bool

@@ -15,10 +15,14 @@ def _values(e: type[enum.Enum]) -> list[str]:
 
 class OrderModel(Base):
     __tablename__ = 'orders'
+    __table_args__ = (
+        sa.Index(
+            'ix_orders_user_created', 'user_id', sa.desc('created_at'), sa.desc('id')),
+    )
 
     id: Mapped[UUID] = mapped_column(primary_key=True, default=uuid4)
     user_id: Mapped[UUID] = mapped_column(sa.ForeignKey('users.id'),
-                                          index=True, nullable=False
+                                          nullable=False
     )
     subscription_type: Mapped[SubscriptionType] = mapped_column(
         sa.Enum(SubscriptionType, name='subscription_type', values_callable=_values),

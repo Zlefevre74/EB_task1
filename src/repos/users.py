@@ -29,7 +29,7 @@ class UserRepo(BaseRepo):
         stmt = (
             select(OrderModel)
             .where(OrderModel.user_id == user_id, OrderModel.is_deleted.is_(False))
-            .order_by(OrderModel.created_at.desc(), OrderModel.id)
+
         )
         return await self.paginate(stmt, params)
 

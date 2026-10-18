@@ -1,4 +1,4 @@
-from sqlalchemy import select, func, Select
+from sqlalchemy import Select, tuple_
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from models.users import Base
@@ -14,6 +14,12 @@ class BaseRepo:
         return entity
 
     async def paginate[T](self, stmt: Select, params: PaginationParams) -> PageResult[T]:
-        total = await self.session.scalar(select(func.count()).select_from(stmt.subquery()))
-        rows = await self.session.execute(stmt.limit(params.size).offset(params.offset))
-        return PageResult(items=rows.scalars().all(), total=total or 0)
+        model = stmt.column_descriptions[0]['entity']
+        if params.last_created_at and params.last_id:
+            stmt = stmt.where(
+                tuple_(model.created_at, model.id)
+                < tuple_(params.last_created_at, params.last_id)
+            )
+        stmt = stmt.order_by(model.created_at.desc(), model.id.desc()).limit(params.size + 1)
+        rows = (await self.session.execute(stmt)).scalars().all()
+        return PageResult(items=rows[:params.size], has_next=len(rows) > params.size)

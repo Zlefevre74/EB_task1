@@ -53,9 +53,8 @@ class UserService:
         result = await self.repo.list_orders(user_id, params)
         return Page[Order](
             items=[order_mapper.to_dto(o) for o in result.items],
-            page=params.page,
             size=params.size,
-            total=result.total,
+            has_next=result.has_next,
         )
 
     async def update_order(self, user_id: UUID, order_id: UUID, payload: OrderUpdate) -> Order:

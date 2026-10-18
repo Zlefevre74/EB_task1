@@ -21,5 +21,6 @@ class Order(BaseModel):
     license_expires_at: datetime
     discount: Decimal
     is_auto_renew: bool
+    created_at: datetime
 
     model_config =  ConfigDict(from_attributes=True)
