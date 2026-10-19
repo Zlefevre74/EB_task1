@@ -1,22 +1,22 @@
 from sqlalchemy import select
-from sqlalchemy.ext.asyncio import AsyncSession
 from uuid import UUID
+from sqlalchemy.orm import selectinload
+
 from models.users import UserModel
+from repos.base import BaseRepo
+from schemas.pagination import PaginationParams, PageResult
 
-class UserRepo:
-    def __init__(self, session: AsyncSession): self.session = session
 
-    async def save(self, user: UserModel) -> UserModel:
-        self.session.add(user)
-        await self.session.flush()
-        return user
-
+class UserRepo(BaseRepo):
     async def get(self, user_id: UUID) -> UserModel | None:
-        stmt = select(UserModel).where(
+        stmt = (select(UserModel).where(
             UserModel.id == user_id,
             UserModel.is_deleted.is_(False),
+            )
+            .options(selectinload(UserModel.orders))
         )
         res = await self.session.execute(stmt)
         return res.scalar_one_or_none()
-
-
+    async def list(self, params: PaginationParams) -> PageResult[UserModel]:
+        stmt = select(UserModel).where(UserModel.is_deleted.is_(False)).options(selectinload(UserModel.orders))
+        return await self.paginate(stmt, params)
