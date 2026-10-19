@@ -12,6 +12,7 @@ class OrderCreate(BaseModel):
     is_auto_renew: bool
 
 class OrderUpdate(BaseModel):
+    id: UUID
     is_auto_renew: bool
 
 class Order(BaseModel):

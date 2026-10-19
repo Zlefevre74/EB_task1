@@ -1,9 +1,5 @@
 import enum
-from datetime import datetime
 from decimal import Decimal
-
-from dateutil.relativedelta import relativedelta
-
 
 class SubscriptionType(enum.StrEnum):
     BASIC = 'basic'
@@ -23,6 +19,3 @@ class BillingPeriod(enum.StrEnum):
         obj.months = months
         obj.discount = discount
         return obj
-
-    def expiry_from(self, moment: datetime) -> datetime:
-        return moment + relativedelta(months=self.months)

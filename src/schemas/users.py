@@ -6,6 +6,8 @@ import uuid
 from exceptions import InvalidField, EmptyPayload
 from typing import Self, Any
 
+from schemas.orders import Order, OrderCreate, OrderUpdate
+
 
 class UserBase(BaseModel):
     username: str
@@ -39,17 +41,21 @@ class UserBase(BaseModel):
 class User(UserBase):
     id: uuid.UUID
     is_locked: bool
+    orders: list[Order] = []
 
     model_config = ConfigDict(from_attributes=True)
 
 class UserCreate(UserBase):
-    pass
+    orders: list[OrderCreate] = []
 
 
 class UserUpdate(UserBase):
     username: str | None = None
     email: EmailStr | None = None
     birth_date: date | None = None
+    orders: list[OrderCreate | OrderUpdate] = []
+
+
 
     @model_validator(mode='after')
     def reject_empty_payload(self) -> Self:
