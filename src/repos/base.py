@@ -2,7 +2,7 @@ from sqlalchemy import Select, tuple_
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from models.users import Base
-from schemas.pagination import PageResult, PaginationParams
+from schemas.pagination import PaginationParams
 
 
 class BaseRepo:
@@ -13,7 +13,7 @@ class BaseRepo:
         await self.session.flush()
         return entity
 
-    async def paginate[T](self, stmt: Select, params: PaginationParams) -> PageResult[T]:
+    async def paginate[T](self, stmt: Select, params: PaginationParams) -> list[T]:
         model = stmt.column_descriptions[0]['entity']
         if params.last_created_at and params.last_id:
             stmt = stmt.where(
@@ -21,5 +21,4 @@ class BaseRepo:
                 < tuple_(params.last_created_at, params.last_id)
             )
         stmt = stmt.order_by(model.created_at.desc(), model.id.desc()).limit(params.size + 1)
-        rows = (await self.session.execute(stmt)).scalars().all()
-        return PageResult(items=rows[:params.size], has_next=len(rows) > params.size)
+        return list((await self.session.execute(stmt)).scalars().all())

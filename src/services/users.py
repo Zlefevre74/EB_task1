@@ -27,7 +27,7 @@ class UserService:
         return to_dto(await self._get_or_raise(user_id))
 
     async def list_users(self, params: PaginationParams) -> Page[User]:
-        return to_page(await self.repo.list(params), params)
+        return to_page(await self.repo.get_with_pagination(params), params)
 
     async def update(self, user_id: UUID, payload: UserUpdate) -> User:
         user = await self._get_or_raise(user_id)

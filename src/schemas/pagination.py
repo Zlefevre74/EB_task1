@@ -1,7 +1,5 @@
-from dataclasses import dataclass
 from datetime import datetime
 from pydantic import BaseModel, Field
-from typing import Sequence
 from uuid import UUID
 
 
@@ -13,10 +11,4 @@ class PaginationParams(BaseModel):
 class Page[T](BaseModel):
     items: list[T]
     size: int
-    has_next: bool
-
-
-@dataclass(frozen=True, slots=True)
-class PageResult[T]:
-    items: Sequence[T]
     has_next: bool

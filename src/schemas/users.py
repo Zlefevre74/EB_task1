@@ -1,5 +1,5 @@
 from pydantic import BaseModel, ConfigDict, field_validator, ValidationInfo, EmailStr, model_validator
-from datetime import date
+from datetime import date, datetime
 
 import uuid
 
@@ -41,6 +41,7 @@ class UserBase(BaseModel):
 class User(UserBase):
     id: uuid.UUID
     is_locked: bool
+    created_at : datetime
     orders: list[Order] = []
 
     model_config = ConfigDict(from_attributes=True)

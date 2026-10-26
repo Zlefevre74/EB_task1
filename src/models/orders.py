@@ -8,7 +8,7 @@ import sqlalchemy as sa
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .users import Base
-from domain.billing import BillingPeriod, SubscriptionType
+from enums.billing import BillingPeriod, SubscriptionType
 
 def _values(e: type[enum.Enum]) -> list[str]:
     return [m.value for m in e]

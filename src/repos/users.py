@@ -4,7 +4,7 @@ from sqlalchemy.orm import selectinload
 
 from models.users import UserModel
 from repos.base import BaseRepo
-from schemas.pagination import PaginationParams, PageResult
+from schemas.pagination import PaginationParams
 
 
 class UserRepo(BaseRepo):
@@ -17,6 +17,6 @@ class UserRepo(BaseRepo):
         )
         res = await self.session.execute(stmt)
         return res.scalar_one_or_none()
-    async def list(self, params: PaginationParams) -> PageResult[UserModel]:
+    async def get_with_pagination(self, params: PaginationParams) -> list[UserModel]:
         stmt = select(UserModel).where(UserModel.is_deleted.is_(False)).options(selectinload(UserModel.orders))
         return await self.paginate(stmt, params)

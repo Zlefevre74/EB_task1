@@ -4,7 +4,7 @@ from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict
 
-from domain.billing import BillingPeriod, SubscriptionType
+from enums.billing import BillingPeriod, SubscriptionType
 
 class OrderCreate(BaseModel):
     subscription_type: SubscriptionType
