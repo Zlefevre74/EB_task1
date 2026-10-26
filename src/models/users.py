@@ -1,5 +1,5 @@
 import sqlalchemy as sa
-from sqlalchemy.orm import DeclarativeMeta, Mapped, declarative_base, mapped_column
+from sqlalchemy.orm import DeclarativeMeta, Mapped, declarative_base, mapped_column, relationship
 
 from datetime import date, datetime
 from uuid import UUID, uuid4
@@ -37,9 +37,13 @@ Base: DeclarativeMeta = declarative_base(metadata=metadata, cls=BaseServiceModel
 
 class UserModel(Base):
     __tablename__ = 'users'
+    __table_args__ = (
+        sa.Index('ix_users_created', sa.desc('created_at'), sa.desc('id')),
+        )
     id: Mapped[UUID] = mapped_column(primary_key=True, default=uuid4)
     username: Mapped[str] = mapped_column(sa.String())
     email: Mapped[str] = mapped_column(sa.String())
     birth_date: Mapped[date] = mapped_column(sa.Date())
     is_locked: Mapped[bool] = mapped_column(sa.Boolean(), server_default=sa.false())
+    orders: Mapped[list['OrderModel']] = relationship(back_populates='user')
 
