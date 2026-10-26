@@ -37,6 +37,9 @@ Base: DeclarativeMeta = declarative_base(metadata=metadata, cls=BaseServiceModel
 
 class UserModel(Base):
     __tablename__ = 'users'
+    __table_args__ = (
+        sa.Index('ix_users_created', sa.desc('created_at'), sa.desc('id')),
+        )
     id: Mapped[UUID] = mapped_column(primary_key=True, default=uuid4)
     username: Mapped[str] = mapped_column(sa.String())
     email: Mapped[str] = mapped_column(sa.String())
