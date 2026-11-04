@@ -5,6 +5,11 @@ class SubscriptionType(enum.StrEnum):
     BASIC = 'basic'
     PRO = 'pro'
 
+class PaymentMethod(enum.StrEnum):
+    CARD = 'card'
+    INVOICE = 'invoice'
+    WIRE = 'wire'
+
 
 class BillingPeriod(enum.StrEnum):
     MONTHLY = 'monthly', 1, Decimal('0')
